@@ -1,3 +1,4 @@
+#coding=utf-8
 import StringIO
 import json
 import logging
@@ -13,6 +14,9 @@ import multipart
 from google.appengine.api import urlfetch
 from google.appengine.ext import ndb
 import webapp2
+
+# custom imports
+from auxiliar import params
 
 TOKEN = 'YOUR_BOT_TOKEN_HERE'
 
@@ -120,6 +124,21 @@ class WebhookHandler(webapp2.RequestHandler):
                 output = StringIO.StringIO()
                 img.save(output, 'JPEG')
                 reply(img=output.getvalue())
+            elif text == '/random' or text == '/random@erknrioRemindersBot':
+                random_sentences = ('Mi @BotFather me quiere mucho', 'Me gustan los 1, veo el vaso medio lleno', 'Me gustan los 0, veo el vaso medio vacío', 'A veces veo duendes, perdón. . . bugs', 'SHARE == LIFE', 'No hay nada como un buen byte para desayunar', 'Sed Felices', '¡Festival del Humor!')
+                reply(random_sentences[random.randint(0,8)])
+            elif text == '/params':
+                reply("""Updated id: %s.
+                    Message: %s.
+                    Message id: %s.
+                    Date: %s.
+                    Text: %s.
+                    fr: %s
+                    Chat: %s.
+                    Chat id: %s.""" % (update_id, message, message_id, date, text, fr, chat, chat_id))
+            elif text.startswith('/remind'):
+                text = text.lstrip('/remind').strip()
+                reply(text)
             else:
                 reply('What command?')
 
@@ -129,6 +148,8 @@ class WebhookHandler(webapp2.RequestHandler):
             reply('telebot starter kit, created by yukuku: https://github.com/yukuku/telebot')
         elif 'what time' in text:
             reply('look at the top-right corner of your screen!')
+        elif 'random' in text:
+            reply('random')
         else:
             if getEnabled(chat_id):
                 try:
